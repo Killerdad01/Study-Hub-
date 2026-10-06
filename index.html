@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#08090d">
+<title>StudyFlow</title>
+<style>
+:root{--bg:#08090d;--card:#11131a;--card2:#171a23;--text:#f6f7fb;--muted:#9298aa;--accent:#7c5cff;--accent2:#19d3ae;--danger:#ff5c7c;--line:#242836}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}body{min-height:100vh}
+button,input,textarea{font:inherit}button{border:0;color:inherit;cursor:pointer}.app{max-width:700px;margin:auto;padding:22px 16px 100px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}.brand{font-weight:900;font-size:24px}.brand span{color:var(--accent)}
+.sub{color:var(--muted);font-size:13px;margin-top:4px}.icon{width:42px;height:42px;border-radius:14px;background:var(--card2);display:grid;place-items:center}
+.hero{background:linear-gradient(135deg,#18142e,#11151f);border:1px solid #302951;border-radius:26px;padding:22px;box-shadow:0 18px 60px #0008}.eyebrow{font-size:11px;letter-spacing:1.6px;color:#aaa2dc;font-weight:800}.hero h1{font-size:34px;line-height:1.05;margin:10px 0}.hero p{color:var(--muted);margin:0 0 20px}.bar{height:9px;background:#292a35;border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),#b28cff);border-radius:99px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}.stat,.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px}.stat b{font-size:22px}.stat span{display:block;color:var(--muted);font-size:11px;margin-top:4px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin-top:12px}.tile{padding:18px;background:var(--card);border:1px solid var(--line);border-radius:20px;text-align:left}.tile strong{display:block;margin-top:10px}.tile small{color:var(--muted)}
+section{display:none}.active{display:block}.title{font-size:25px;margin:10px 0 14px}.row{display:flex;align-items:center;justify-content:space-between;gap:10px}.list{display:grid;gap:10px}.item{padding:15px;background:var(--card);border:1px solid var(--line);border-radius:18px}.item small{color:var(--muted)}.done{text-decoration:line-through;opacity:.55}
+input,textarea{width:100%;background:#0d0f15;border:1px solid var(--line);color:var(--text);border-radius:14px;padding:12px;outline:none}textarea{min-height:130px;resize:vertical}.form{display:grid;gap:9px;margin-bottom:12px}.primary{background:var(--accent);padding:12px 16px;border-radius:14px;font-weight:800}.ghost{background:var(--card2);padding:10px 13px;border-radius:12px}.danger{background:#3a1822;color:#ff9eb1;padding:10px 13px;border-radius:12px}
+nav{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);width:min(670px,calc(100% - 24px));background:#11131aeF;border:1px solid var(--line);backdrop-filter:blur(18px);border-radius:22px;padding:7px;display:grid;grid-template-columns:repeat(4,1fr);z-index:20}nav button{background:transparent;padding:10px 4px;border-radius:15px;color:var(--muted);font-size:11px}nav button.on{background:#211b3b;color:#fff}
+.timer{position:fixed;inset:0;background:#050609;z-index:50;display:none;align-items:center;justify-content:center;padding:25px}.timer.show{display:flex}.timerbox{text-align:center;width:100%}.timer h2{font-size:15px;color:var(--muted);font-weight:600}.clock{font-size:clamp(72px,23vw,170px);font-weight:900;letter-spacing:-5px;margin:10px 0}.timer .subject{color:#a99cff}.timerBtns{display:flex;justify-content:center;gap:9px;flex-wrap:wrap}.quote{color:#666b7a;margin:24px 0}.modal{position:fixed;inset:0;background:#000b;z-index:60;display:none;align-items:center;justify-content:center;padding:20px}.modal.show{display:flex}.modalbox{width:min(430px,100%);background:var(--card);border:1px solid var(--line);border-radius:24px;padding:20px}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top"><div><div class="brand">Study<span>Flow</span></div><div class="sub">Your personal study space</div></div><button class="icon" onclick="startTimer()">⏱️</button></header>
+
+<section id="home" class="active">
+<div class="hero"><div class="eyebrow">TODAY'S FOCUS</div><h1 id="focusText">Small progress. Big results.</h1><p>Build momentum one focused session at a time.</p><div class="bar"><i id="progressBar"></i></div></div>
+<div class="stats"><div class="stat"><b id="mins">0</b><span>focus min</span></div><div class="stat"><b id="tasksCount">0</b><span>tasks</span></div><div class="stat"><b id="streak">1</b><span>day streak</span></div></div>
+<div class="grid">
+<button class="tile" onclick="show('planner')">📅<strong>Daily Timetable</strong><small>Plan your day</small></button>
+<button class="tile" onclick="show('tasks')">✅<strong>Homework</strong><small>Track assignments</small></button>
+<button class="tile" onclick="show('notes')">📝<strong>AI Notes</strong><small>Make quick notes</small></button>
+<button class="tile" onclick="show('tools')">🧠<strong>Study Tools</strong><small>Flashcards & formulas</small></button>
+</div>
+</section>
+
+<section id="planner"><h2 class="title">Daily Timetable</h2><div class="form"><input id="slot" placeholder="e.g. 6:00 PM — Physics"><button class="primary" onclick="addSlot()">Add study slot</button></div><div id="slots" class="list"></div></section>
+
+<section id="tasks"><h2 class="title">Homework</h2><div class="form"><input id="task" placeholder="What do you need to finish?"><button class="primary" onclick="addTask()">Add homework</button></div><div id="tasksList" class="list"></div></section>
+
+<section id="notes"><h2 class="title">Study Notes</h2><div class="form"><input id="noteTitle" placeholder="Topic / chapter"><textarea id="noteBody" placeholder="Write your important points, formulas, definitions..."></textarea><button class="primary" onclick="addNote()">Save note</button></div><div id="notesList" class="list"></div></section>
+
+<section id="tools"><h2 class="title">Study Tools</h2><div class="card"><div class="row"><b>⚡ Focus Timer</b><button class="primary" onclick="startTimer()">Start</button></div><p class="sub">25-minute distraction-free session.</p></div><div class="card" style="margin-top:10px"><b>🃏 Flashcard</b><p id="flash">Question: What is the SI unit of force?</p><button class="ghost" onclick="flip()">Show answer</button></div><div class="card" style="margin-top:10px"><b>📐 Formula Vault</b><p class="sub">F = ma · V = IR · P = VI · v = u + at · a = Δv/Δt</p></div></section>
+</div>
+
+<nav><button class="on" onclick="show('home',this)">⌂<br>Home</button><button onclick="show('planner',this)">▣<br>Plan</button><button onclick="show('tasks',this)">✓<br>Tasks</button><button onclick="show('tools',this)">✦<br>Tools</button></nav>
+
+<div id="timer" class="timer"><div class="timerbox"><h2>FOCUS SESSION</h2><div class="subject" id="timerSubject">Study</div><div class="clock" id="clock">25:00</div><div class="quote">One session. One chapter. Full focus.</div><div class="timerBtns"><button class="ghost" id="pauseBtn" onclick="pauseTimer()">Pause</button><button class="ghost" onclick="restartTimer()">Restart</button><button class="danger" onclick="endTimer()">End Session</button></div></div></div>
+
+<div id="subjectModal" class="modal"><div class="modalbox"><h2>What are you studying?</h2><input id="subjectInput" placeholder="Physics, Chemistry, Maths..."><div style="display:flex;gap:8px;margin-top:12px"><button class="primary" onclick="beginTimer()">Start Focus</button><button class="ghost" onclick="closeModal()">Cancel</button></div></div></div>
+
+<script>
+const KEY='studyFlow'; let data=JSON.parse(localStorage.getItem(KEY)||'{"tasks":[],"slots":[],"notes":[],"minutes":0,"streak":1}'); let timer=1500,interval=null,running=false;
+function save(){localStorage.setItem(KEY,JSON.stringify(data));render()}
+function show(id,btn){document.querySelectorAll('section').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('nav button').forEach(x=>x.classList.remove('on'));if(btn)btn.classList.add('on')}
+function addTask(){let v=task.value.trim();if(!v)return;data.tasks.push({text:v,done:false});task.value='';save()}
+function toggleTask(i){data.tasks[i].done=!data.tasks[i].done;save()}
+function delTask(i){data.tasks.splice(i,1);save()}
+function addSlot(){let v=slot.value.trim();if(!v)return;data.slots.push(v);slot.value='';save()}
+function delSlot(i){data.slots.splice(i,1);save()}
+function addNote(){let t=noteTitle.value.trim(),b=noteBody.value.trim();if(!t||!b)return;data.notes.unshift({t,b});noteTitle.value='';noteBody.value='';save()}
+function delNote(i){data.notes.splice(i,1);save()}
+function render(){
+tasksCount.textContent=data.tasks.length;mins.textContent=data.minutes;streak.textContent=data.streak;
+let done=data.tasks.filter(x=>x.done).length;progressBar.style.width=(data.tasks.length?done/data.tasks.length*100:0)+'%';
+tasksList.innerHTML=data.tasks.length?data.tasks.map((x,i)=>`<div class="item"><div class="row"><span class="${x.done?'done':''}">${esc(x.text)}</span><span><button class="ghost" onclick="toggleTask(${i})">${x.done?'↩':'✓'}</button> <button class="danger" onclick="delTask(${i})">×</button></span></div></div>`).join(''):'<div class="item"><span class="sub">No homework yet.</span></div>';
+slots.innerHTML=data.slots.length?data.slots.map((x,i)=>`<div class="item"><div class="row"><b>⏰ ${esc(x)}</b><button class="danger" onclick="delSlot(${i})">×</button></div></div>`).join(''):'<div class="item"><span class="sub">Add your first study slot.</span></div>';
+notesList.innerHTML=data.notes.length?data.notes.map((x,i)=>`<div class="item"><b>${esc(x.t)}</b><p class="sub">${esc(x.b).replace(/\n/g,'<br>')}</p><button class="danger" onclick="delNote(${i})">Delete</button></div>`).join(''):'<div class="item"><span class="sub">Your saved notes appear here.</span></div>';
+}
+function esc(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
+function startTimer(){subjectModal.classList.add('show');subjectInput.focus()}
+function closeModal(){subjectModal.classList.remove('show')}
+function beginTimer(){let s=subjectInput.value.trim()||'Study';timerSubject.textContent=s;closeModal();timer=1500;running=true;timerEl();timerBox();timer.classList.add('show');clearInterval(interval);interval=setInterval(tick,1000)}
+function tick(){if(!running)return;timer--;timerEl();if(timer<=0){clearInterval(interval);running=false;navigator.vibrate&&navigator.vibrate([300,150,300]);data.minutes+=25;save();alert('Focus session complete! 🎉');endTimer()}}
+function timerEl(){let m=Math.floor(timer/60),s=timer%60;clock.textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`}
+function pauseTimer(){running=!running;pauseBtn.textContent=running?'Pause':'Resume'}
+function restartTimer(){timer=1500;running=true;timerEl();pauseBtn.textContent='Pause'}
+function endTimer(){if(running){data.minutes+=Math.max(0,Math.floor((1500-timer)/60));save()}clearInterval(interval);running=false;timer.classList.remove('show');timer=1500;timerEl()}
+function timerBox(){pauseBtn.textContent='Pause'}
+function flip(){flash.textContent='Answer: Newton (N).'}
+render();
+</script>
+</body>
+</html>
