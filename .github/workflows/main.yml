@@ -1,1 +1,1 @@
-
+name: Build FocusForge APK, on workflow dispatch, push, branches main, jobs build runs on Ubuntu latest, steps: download project uses actions checkout at v4, set up Java uses actions setup-java at v4 with distribution Temurin, version 17, set up Gradle uses Gradle actions setup-gradle at v4, build debug APK run gradle assemble debug, upload APK uses actions upload-artifact at v4 with name FocusForge-APK and path app build outputs apk debug star apk
